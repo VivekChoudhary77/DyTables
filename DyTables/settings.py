@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
+import secureCred
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
@@ -24,15 +25,17 @@ STATIC_DIR = os.path.join(BASE_DIR, 'static')
 SECRET_KEY = '7kpacyn5(_nk-3@jw$yogq4sy99urbq3k@4&1@aov49_%v@_t%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+
+ALLOWED_HOSTS = ['13.232.198.166']
 
 
 # Application definition
 
 INSTALLED_APPS = [
     'TMS',
+    'social_django',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -49,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'DyTables.urls'
@@ -75,10 +79,15 @@ WSGI_APPLICATION = 'DyTables.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'djongo',
+        'NAME': 'Lalit',
+        'ENFORCE_SCHEMA': False,
+        'CLIENT': {
+                'host': secureCred.HOST_URL
+        }
     }
 }
 
@@ -102,6 +111,11 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+AUTHENTICATION_BACKENDS = {
+    'TMS.auth0backend.Auth0',
+    'django.contrib.auth.backends.ModelBackend'
+}
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
@@ -118,9 +132,28 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATIC_URL = '/static/'
-STATIC_URL = '/static/'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATICFILES_DIRS = [
     STATIC_DIR,
+]
+
+# login url
+
+LOGIN_URL = '/login/auth0'
+LOGIN_REDIRECT_URL = '/'
+
+# vonfigure auth0
+
+SOCIAL_AUTH_TRAILING_SLASH = False  # Remove trailing slash from routes
+SOCIAL_AUTH_AUTH0_DOMAIN = 'dev-67jdyo0h.us.auth0.com'
+SOCIAL_AUTH_AUTH0_KEY = 't9B0R0MLHydGf0HgACuRWqWRO8wqvHWM'
+SOCIAL_AUTH_AUTH0_SECRET = secureCred.AUTH_SEC
+
+SOCIAL_AUTH_AUTH0_SCOPE = [
+    'openid',
+    'profile',
+    'email'
 ]

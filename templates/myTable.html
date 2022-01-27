@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <p class="h3 mb-3 font-weight-normal mt-2 text-dark">
+        My Table
+        <br>
+    </p>
+    <p class="h4 mb-3 font-weight-normal mt-2 text-success">
+        {{msg}} </p>
+
+    {% for d in data %}
+    <div class="row">
+        <div class="col-xl-12">
+            <hr>
+            <div>
+                <a href="getTable?id={{d.table_name}}">
+
+                    <div
+                        class="single_service d-flex justify-content-between align-items-center btn btn-outline-dark row">
+                        <div class="d-flex align-items-center col-md-4">
+                            <div class="thumb">
+                            </div>
+                            <div class="col-md-3">
+                                {{ forloop.counter }}
+                            </div>
+                        </div>
+                        <h4>
+                            {{d.actual_table_name}}
+                        </h4>
+                        <div class="col-md-3">
+                            <p><small>create on : {{d.created_at}}</small></p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+
+    <p class="h4 mb-3 font-weight-normal mt-2 text-success">
+
+        <br>
+        No tables in list! , Create form Create New Section..
+
+    </p>
+
+    {% endfor %}
+</div>
+
+{% endblock content %}
